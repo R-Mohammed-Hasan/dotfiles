@@ -532,3 +532,43 @@ source "${ZDOTDIR}/plugins/powerlevel10k/powerlevel10k.zsh-theme"
 
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
+
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.local/dotfiles/zsh/plugins/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# [[ -r ~/Repos/znap/znap.zsh ]] ||
+#     git clone --depth 1 -- \
+#         https://github.com/marlonrichert/zsh-snap.git ~/Repos/znap
+# source ~/Repos/znap/znap.zsh  # Start Znap
+# plugins=(git zsh-autosuggestions asdf node virtualenv)
+
+
+source $ZSH/oh-my-zsh.sh
+
+
+# Enable fuzzy history search with fzf
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+
+# Use fzf for history search
+# History search with fzf
+__fzf_history__() {
+    local selected
+    selected=$(fc -rl 1 | fzf +s --tac) && LBUFFER=${selected#* }
+    zle redisplay
+}
+zle -N fzf-history-search __fzf_history__
+bindkey '^R' fzf-history-search
